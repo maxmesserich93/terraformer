@@ -62,6 +62,9 @@ func newCmdKeycloakImporter(options ImportOptions) *cobra.Command {
 			if len(caCert) == 0 {
 				caCert = "-"
 			}
+			//TODO: Default value "/auth"
+			basePath := os.Getenv("KEYCLOAK_BASE_PATH")
+			stringArgs :=  []string{url, clientID, clientSecret, realm, strconv.FormatInt(clientTimeout, 10), caCert, strconv.FormatBool(tlsInsecureSkipVerify), basePath}
 			if len(targets) > 0 {
 				originalPathPattern := options.PathPattern
 				for _, target := range targets {
@@ -69,7 +72,7 @@ func newCmdKeycloakImporter(options ImportOptions) *cobra.Command {
 					log.Println(provider.GetName() + " importing realm " + target)
 					options.PathPattern = originalPathPattern
 					options.PathPattern = strings.ReplaceAll(options.PathPattern, "{provider}", "{provider}/"+target)
-					err := Import(provider, options, []string{url, clientID, clientSecret, realm, strconv.FormatInt(clientTimeout, 10), caCert, strconv.FormatBool(tlsInsecureSkipVerify), target})
+					err := Import(provider, options, append(stringArgs, target))
 					if err != nil {
 						return err
 					}
@@ -77,12 +80,12 @@ func newCmdKeycloakImporter(options ImportOptions) *cobra.Command {
 			} else {
 				provider := newKeycloakProvider()
 				log.Println(provider.GetName() + " importing all realms")
-				err := Import(provider, options, []string{url, clientID, clientSecret, realm, strconv.FormatInt(clientTimeout, 10), caCert, strconv.FormatBool(tlsInsecureSkipVerify), "-"})
+				err := Import(provider, options, append(stringArgs,"-"))
 				if err != nil {
 					return err
 				}
 			}
-			return nil
+		return nil
 		},
 	}
 

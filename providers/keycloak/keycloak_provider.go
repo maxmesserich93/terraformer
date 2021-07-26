@@ -16,6 +16,7 @@ package keycloak
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/GoogleCloudPlatform/terraformer/terraformutils"
@@ -32,6 +33,7 @@ type KeycloakProvider struct { //nolint
 	caCert                string
 	tlsInsecureSkipVerify bool
 	target                string
+	base_path              string
 }
 
 func getArg(arg string) string {
@@ -42,6 +44,7 @@ func getArg(arg string) string {
 }
 
 func (p *KeycloakProvider) Init(args []string) error {
+	fmt.Println("ARGS: ",args)
 	p.url = args[0]
 	p.clientID = args[1]
 	p.clientSecret = args[2]
@@ -49,7 +52,8 @@ func (p *KeycloakProvider) Init(args []string) error {
 	p.clientTimeout, _ = strconv.Atoi(args[4])
 	p.caCert = getArg(args[5])
 	p.tlsInsecureSkipVerify, _ = strconv.ParseBool(args[6])
-	p.target = getArg(args[7])
+	p.base_path = args[7]
+	p.target = getArg(args[8])
 	return nil
 }
 
@@ -64,6 +68,7 @@ func (p *KeycloakProvider) GetProviderData(arg ...string) map[string]interface{}
 func (p *KeycloakProvider) GetConfig() cty.Value {
 	return cty.ObjectVal(map[string]cty.Value{
 		"url":                      cty.StringVal(p.url),
+		"base_path":                 cty.StringVal(p.base_path),
 		"client_id":                cty.StringVal(p.clientID),
 		"client_secret":            cty.StringVal(p.clientSecret),
 		"realm":                    cty.StringVal(p.realm),
@@ -94,6 +99,7 @@ func (p *KeycloakProvider) InitService(serviceName string, verbose bool) error {
 		"client_timeout":           p.clientTimeout,
 		"root_ca_certificate":      p.caCert,
 		"tls_insecure_skip_verify": p.tlsInsecureSkipVerify,
+		"basePath":                	p.base_path,
 		"target":                   p.target,
 	})
 	return nil
