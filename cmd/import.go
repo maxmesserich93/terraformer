@@ -61,7 +61,9 @@ const DefaultPathOutput = "generated"
 const DefaultState = "local"
 
 func newImportCmd() *cobra.Command {
-	options := ImportOptions{}
+	options := ImportOptions{
+
+	}
 	cmd := &cobra.Command{
 		Use:           "import",
 		Short:         "Import current state to Terraform configuration",
@@ -71,12 +73,19 @@ func newImportCmd() *cobra.Command {
 		//Version:       version.String(),
 	}
 
-	cmd.AddCommand(newCmdPlanImporter(options))
-	for _, subcommand := range providerImporterSubcommands() {
-		providerCommand := subcommand(options)
-		_ = providerCommand.MarkPersistentFlagRequired("resources")
-		cmd.AddCommand(providerCommand)
-	}
+
+	//cmd.AddCommand(newCmdPlanImporter(options))
+	fmt.Println("OPTIONSL: ", options)
+	subcommamnd := newCmdKeycloakImporter
+	providerCommand := subcommamnd(options)
+	_ = providerCommand.MarkPersistentFlagRequired("resources")
+	cmd.AddCommand(providerCommand)
+
+	//for _, subcommand := range providerImporterSubcommands() {
+	//	providerCommand := subcommand(options)
+	//	_ = providerCommand.MarkPersistentFlagRequired("resources")
+	//	cmd.AddCommand(providerCommand)
+	//}
 	return cmd
 }
 

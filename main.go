@@ -37,6 +37,7 @@ func (t TerraformerWriter) Write(p []byte) (n int, err error) {
 func main() {
 	log.SetOutput(TerraformerWriter{})
 	if err := cmd.Execute(); err != nil {
+
 		log.Println(err)
 		os.Exit(1)
 	}

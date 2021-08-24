@@ -35,7 +35,6 @@ func (g *RealmGenerator) InitResources() error {
 	var realmsGroups []*keycloak.Group
 
 	// Connect to keycloak instance
-	fmt.Println("G: ", g)
 	kck, err := g.createKeycloakClientFromEnv()
 	if err != nil {
 		return errors.New("keycloak: could not connect to Keycloak: " + err.Error())
@@ -53,6 +52,7 @@ func (g *RealmGenerator) InitResources() error {
 		if err != nil {
 			return errors.New("keycloak: could not get " + target + " realm attributes in Keycloak")
 		}
+		fmt.Println("REALM: ", realm)
 		realms = append(realms, realm)
 	}
 	g.Resources = append(g.Resources, g.createRealmResources(realms)...)
@@ -347,22 +347,6 @@ func (g *RealmGenerator) InitResources() error {
 }
 
 func (g *RealmGenerator) createKeycloakClientFromEnv() (*keycloak.KeycloakClient, error) {
-	kck, err := keycloak.NewKeycloakClient(
-		g.GetArgs()["url"].(string),
-		g.GetArgs()["basePath"].(string),
-		g.GetArgs()["client_id"].(string),
-		g.GetArgs()["client_secret"].(string),
-		g.GetArgs()["realm"].(string), "", "",
-		true,
-		g.GetArgs()["client_timeout"].(int),
-		g.GetArgs()["root_ca_certificate"].(string),
-		g.GetArgs()["tls_insecure_skip_verify"].(bool),
-		"",
-		make(map[string]string))
-	return kck, err
-}
-
-func (g *RealmGenerator) createClient() (*keycloak.KeycloakClient, error) {
 	kck, err := keycloak.NewKeycloakClient(
 		g.GetArgs()["url"].(string),
 		g.GetArgs()["basePath"].(string),

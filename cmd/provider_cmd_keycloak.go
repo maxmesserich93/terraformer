@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -35,6 +36,7 @@ const (
 
 func newCmdKeycloakImporter(options ImportOptions) *cobra.Command {
 	targets := []string{}
+	targets = append(targets, "rewe-fulfillment")
 	cmd := &cobra.Command{
 		Use:   "keycloak",
 		Short: "Import current state to Terraform configuration from Keycloak",

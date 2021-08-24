@@ -162,6 +162,9 @@ func (p *ProviderWrapper) Refresh(info *terraform.InstanceInfo, state *terraform
 	schema := p.GetSchema()
 	impliedType := schema.ResourceTypes[info.Type].Block.ImpliedType()
 	priorState, err := state.AttrsAsObjectValue(impliedType)
+
+	//test := info.Type == "keycloak_realm"
+
 	if err != nil {
 		return nil, err
 	}
